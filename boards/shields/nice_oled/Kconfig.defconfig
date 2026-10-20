@@ -63,6 +63,14 @@ config NICE_OLED_POKEMON_ANIMATION_MS
     int "Animation length in milliseconds"
     default 4800
 
+config NICE_OLED_CUSTOM_ART
+    bool "Use assets/custom_art.c on peripheral (set NICE_OLED_GEM_ANIMATION=n)"
+    default n
+
+config NICE_OLED_CUSTOM_ART_ANIMATION_MS
+    int "Custom art animation length in milliseconds"
+    default 1000
+
 config NICE_OLED_VIM
     bool "Enable static vim on peripheral"
     default n

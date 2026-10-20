@@ -169,6 +169,20 @@ You can enable only the capslock if it is more appropriate for you:
 CONFIG_NICE_OLED_WIDGET_HID_INDICATORS_LUNA_ONLY_CAPSLOCK=y
 ```
 
+## Custom art
+Show your own 69x68 art (static or animated) on the peripheral instead of the gem/pokemon art:
+
+```conf
+CONFIG_NICE_OLED_GEM_ANIMATION=n   # required, otherwise the gem art is used
+CONFIG_NICE_OLED_CUSTOM_ART=y
+CONFIG_NICE_OLED_CUSTOM_ART_ANIMATION_MS=1000
+```
+
+The frames live in a single file, `boards/shields/nice_oled/assets/custom_art.c`, which must define
+`custom_art_01..N` (`lv_img_dsc_t`, `LV_IMG_CF_INDEXED_1BIT`), `const lv_img_dsc_t *custom_art_imgs[]`
+and `const int custom_art_frame_count`. One frame is shown as a static image, more than one is animated.
+Replace that file (a 2-frame placeholder ships by default) with your own.
+
 # Suggestions
 If you have any implementation suggestion or something similar opens a
 discussion

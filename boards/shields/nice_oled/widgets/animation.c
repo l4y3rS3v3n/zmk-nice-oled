@@ -59,6 +59,12 @@ const lv_img_dsc_t *pokemon_imgs[] = {
     &pokemon15, &pokemon16, &pokemon17, &pokemon18, &pokemon19, &pokemon20,
 };
 
+#if IS_ENABLED(CONFIG_NICE_OLED_CUSTOM_ART)
+// CONFIG_NICE_OLED_CUSTOM_ART (frames live in assets/custom_art.c)
+extern const lv_img_dsc_t *custom_art_imgs[];
+extern const int custom_art_frame_count;
+#endif
+
 // CONFIG_NICE_OLED_VIM
 LV_IMG_DECLARE(vim);
 #define FIXED_IMAGE_1 &vim
@@ -77,7 +83,21 @@ void draw_animation(lv_obj_t *canvas, struct zmk_widget_screen *widget) {
     lv_obj_t *art = NULL;
     lv_obj_t *art2 = NULL;
 
-#if IS_ENABLED(CONFIG_NICE_OLED_GEM_ANIMATION)
+#if IS_ENABLED(CONFIG_NICE_OLED_CUSTOM_ART)
+    /* Custom art replaces gem/pokemon art. */
+    if (custom_art_frame_count <= 1) {
+        art = lv_img_create(widget->obj);
+        lv_img_set_src(art, custom_art_imgs[0]);
+    } else {
+        art = lv_animimg_create(widget->obj);
+        lv_obj_center(art);
+        lv_animimg_set_src(art, (const void **)custom_art_imgs, custom_art_frame_count);
+        lv_animimg_set_duration(art, CONFIG_NICE_OLED_CUSTOM_ART_ANIMATION_MS);
+        lv_animimg_set_repeat_count(art, LV_ANIM_REPEAT_INFINITE);
+        lv_animimg_start(art);
+    }
+
+#elif IS_ENABLED(CONFIG_NICE_OLED_GEM_ANIMATION)
     art = lv_animimg_create(widget->obj);
     lv_obj_center(art);
 
@@ -128,7 +148,9 @@ void draw_animation(lv_obj_t *canvas, struct zmk_widget_screen *widget) {
 
     /* Finally, we position if there is something in art or art2 */
     if (art) {
-#if IS_ENABLED(CONFIG_NICE_OLED_GEM_ANIMATION)
+#if IS_ENABLED(CONFIG_NICE_OLED_CUSTOM_ART)
+        lv_obj_align(art, LV_ALIGN_TOP_LEFT, 18, -18);
+#elif IS_ENABLED(CONFIG_NICE_OLED_GEM_ANIMATION)
         /* coordinate adjustment if it was Gem animation */
         lv_obj_align(art, LV_ALIGN_TOP_LEFT, 18, -18);
 #elif IS_ENABLED(CONFIG_NICE_OLED_POKEMON_ANIMATION)
